@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net"
 	"time"
 )
@@ -21,13 +20,10 @@ func main() {
 		time.Sleep(1 * time.Second)
 
 		_, err = conn.Write([]byte("Hello World!!"))
-
 		if err != nil {
-			fmt.Println(err)
+			panic(err)
 		}
-		fmt.Println("書き込み")
 	}
-
 }
 
 func DialWithContext(ctx context.Context, network, address string) (net.Conn, func() bool, error) {
@@ -37,7 +33,6 @@ func DialWithContext(ctx context.Context, network, address string) (net.Conn, fu
 	}
 
 	stop := context.AfterFunc(ctx, func() {
-		fmt.Println("アフターファンク")
 		conn.Close()
 	})
 
