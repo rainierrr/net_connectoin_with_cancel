@@ -9,33 +9,23 @@ import (
 
 func main() {
 
-	listener, err := net.Listen("tcp", ":0")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer listener.Close()
-
-	conn, err := net.Dial(listener.Addr().Network(), listener.Addr().String())
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer conn.Close()
-
 	// ここでタイムアウト
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 5000*time.Millisecond)
 	defer cancel()
 
-	newConn, err := DialWithContext(ctx, listener.Addr().Network(), listener.Addr().String())
+	//conn, err := net.Dial("tcp", ":8080")
+	conn, err := DialWithContext(ctx, "tcp", ":8080")
 	if err != nil {
-		fmt.Println(err)
-		return
+		panic(err)
 	}
-	//スコープから出るときに
-	defer newConn.Close()
-	fmt.Println(err)
 
+	_, err = conn.Write([]byte("Hello World!!"))
+	if err != nil {
+		panic(err)
+	}
+
+	//スコープから出るときに
+	defer conn.Close()
 }
 
 func DialWithContext(ctx context.Context, network, address string) (net.Conn, error) {
